@@ -1,12 +1,14 @@
 import React, { useContext } from 'react'
 import { useState } from "react";
+import AlertContext from '../../context/alert/AlertContext';
 import GithubContext from '../../context/github/GithubContext';
 
 function UserSearch() {
 
     const [text, setText] = useState('');
 
-    const {users} = useContext(GithubContext)
+    const {users, searchUsers, clearUsers} = useContext(GithubContext)
+    const {setAlert} = useContext(AlertContext)
 
     const handleChange = (e) => {
         setText(e.target.value);
@@ -16,13 +18,17 @@ function UserSearch() {
         e.preventDefault();
 
         if(text === ''){
-            alert('search cannot be empty')
+            setAlert('Search cannot be empty', 'error')
         }else{
             // @todo - Search Users
-            console.log(`you searchedfor ${text}`)
+            searchUsers(text)
             setText('')
         }
         
+    }
+
+    const handleClear = () => {
+        clearUsers()
     }
 
 
@@ -45,7 +51,6 @@ function UserSearch() {
                         <button 
                             type='submit' 
                             className='btn btn-lg absolute top-0 right-0 rounded-l-none w-36'
-                            
                         >
                             GO
                         </button>
@@ -54,9 +59,8 @@ function UserSearch() {
             </form>
         </div>
 
-        { users.lenght > 0 &&
-            <div>
-                <button className='btn btn-ghost btn-lg'>Clear</button>
+        { users.length > 0 && <div>
+                <button className='btn btn-ghost btn-lg' onClick={handleClear}>Clear</button>
             </div>
         }
     </div>
